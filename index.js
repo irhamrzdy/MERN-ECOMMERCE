@@ -1,6 +1,6 @@
 const express = require('express')
 const productRouter = require('./routes/api/products')
-
+const customerRouter = require('./routes/api/customer')
 const app = express();
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -14,5 +14,6 @@ mongoose.connect('mongodb://localhost/mern-ecommerce', {
 })
 
 app.use('/api', productRouter)
+app.use('/api', customerRouter)
 
 app.listen(PORT, () => console.log(`Started on PORT ${PORT}`))
