@@ -48,9 +48,35 @@ module.exports = {
 
             customer.token = token;
 
-            res.status(201).json(customer);
+            res.status(201).json({ message: 'Register Success', payload: customer });
         } catch (err) {
             console.log(err)
+        }
+    },
+    login: async (req, res) => {
+        try {
+            const { email, password } = req.body;
+
+            if (!(email && password)) {
+                res.status(400).send("Input Required");
+            }
+
+            const customer = await Customer.findOne({ email });
+
+            if (customer && (await bcrypt.compare(password, customer.password))) {
+                const token = jwt.sign({
+                    customer_id: customer._id, email
+                }, process.env.TOKEN_KEY, {
+                    expiresIn: "2h"
+                });
+
+                customer.token = token;
+
+                res.status(200).json({ message: 'Login Success', payload: customer })
+            }
+            res.status(400).send("Invalid Credentials");
+        } catch (error) {
+            console.log(error)
         }
     },
     delete: async (req, res) => {
