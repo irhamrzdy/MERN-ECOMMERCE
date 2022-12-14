@@ -1,4 +1,5 @@
 const express = require('express')
+const adminRouter = require('./routes/api/admin')
 const productRouter = require('./routes/api/products')
 const customerRouter = require('./routes/api/customer')
 const app = express();
@@ -13,6 +14,7 @@ mongoose.connect('mongodb://localhost/mern-ecommerce', {
     useUnifiedTopology: true
 })
 
+app.use('/api', adminRouter)
 app.use('/api', productRouter)
 app.use('/api', customerRouter)
 
