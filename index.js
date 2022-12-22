@@ -1,21 +1,22 @@
 const express = require('express')
-const adminRouter = require('./routes/api/admin')
-const productRouter = require('./routes/api/products')
-const customerRouter = require('./routes/api/customer')
+const cors = require('cors')
+const bodyParser = require('body-parser')
+const morgan = require('morgan')
 const app = express();
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-
-const PORT = 3001;
-
-const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/mern-ecommerce', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+app.use(morgan('dev'))
+app.use(cors())
+app.use(bodyParser.json())
+app.use('/files', express.static("files"));
+app.get('/', (req, res) => {
+    res.json({
+        message: 'irhamrzdy MERN Developers'
+    })
 })
 
-app.use('/api', adminRouter)
-app.use('/api', productRouter)
-app.use('/api', customerRouter)
+require('./config/mongoose')(app);
+require('./routerHandler')(app)
 
-app.listen(PORT, () => console.log(`Started on PORT ${PORT}`))
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+    console.log(`Application is Running on ${port}`)
+})
